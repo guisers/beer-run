@@ -177,15 +177,32 @@ function addBaddie() {
 }
 
 function moveBaddie(baddie) {
+	var origSpeed;
 	var speed;
-	if(Math.abs(baddie.body.velocity.x) == 200 || Math.abs(baddie.body.velocity.y) == 200) {
-		speed = 200;
-	} else if (Math.abs(baddie.body.velocity.x) == 300 || Math.abs(baddie.body.velocity.y) == 300){
-		speed = 300;
-	} else {
-		speed = 150;
-	}
+	var horiz = false;
+	
 	if (baddie.body.velocity.x != 0) {
+		horiz = true;
+		origSpeed = baddie.body.velocity.x;
+
+	} else {
+		horiz = false;
+		origSpeed = baddie.body.velocity.y;
+	}
+
+	switch (origSpeed) {
+		case 150: case -150:
+			speed = 150;
+			break;
+		case 200: case -200:
+			speed = 200;
+			break;
+		case 300: case -300:
+			speed = 300;
+			break;
+	}
+
+	if (horiz) {
 		if(baddie.x > (game.world.width - 32)) {
 			baddie.body.velocity.x = -speed;
 			baddie.animations.play('left');	
