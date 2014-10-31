@@ -7,7 +7,7 @@ var gameoverText;
 var pspeed = 150;
 
 function preload() {
-	game.load.image('star', 'assets/beer.png');
+	game.load.image('beer', 'assets/beer.png');
 	game.load.spritesheet('dude', 'assets/pedestrian2.png', 32, 48);
 	game.load.spritesheet('bike', 'assets/bike2.png', 40, 40);
 	game.load.spritesheet('boarder', 'assets/boarder.png', 32, 40);
@@ -17,9 +17,6 @@ function preload() {
 function create() {
 	//Start physics engine
 	game.physics.startSystem(Phaser.Physics.ARCADE);
-
-	//Playing state
-	playing = true;
 
 	//Background
 	game.stage.backgroundColor = '#CCFFFF';
@@ -36,9 +33,9 @@ function create() {
 	baddies.enableBody = true;
 	addBaddie();
 
-	//Star
-	star = game.add.sprite(512, 512, 'star');
-	game.physics.arcade.enable(star);
+	//Beer
+	beer = game.add.sprite(512, 512, 'beer');
+	game.physics.arcade.enable(beer);
 
 	//Keyboard listener
 	cursors = game.input.keyboard.createCursorKeys();
@@ -48,6 +45,10 @@ function create() {
 	scoreText = game.add.text(16, 16, 
 		"Beers: " + score + '\nHigh Score: ' + highScore, 
 		{fontSize: '32px', fill: '#000'});
+
+	//Playing state
+	playing = true;
+
 }
 
 function update() {
@@ -55,7 +56,7 @@ function update() {
 	player.body.velocity.y = 0;
 
 	if (playing) {
-		game.physics.arcade.overlap(player, star, collectStar);
+		game.physics.arcade.overlap(player, beer, collectBeer);
 		controlPlayer();
 		baddies.forEachExists(moveBaddie, this);
 		game.physics.arcade.overlap(player, baddies, gameOver);
@@ -68,14 +69,14 @@ function update() {
 			gameoverText.destroy(true);
 			score = 0;
 			pspeed = 150;
-			collectStar(player, star);
+			collectBeer(player, beer);
 			playing = true;
 		}	
 	}
 	
 }
 
-function collectStar(player, star) {
+function collectBeer(player, beer) {
 	if (playing) {
 		score += 1;
 		pspeed += 5;
@@ -83,8 +84,8 @@ function collectStar(player, star) {
 
 	updateScore();
 
-	star.x = Math.floor(Math.random() * 10000 % (game.world.width - 24));
-	star.y = Math.floor(Math.random() * 10000 % (game.world.height - 22));
+	beer.x = Math.floor(Math.random() * 10000 % (game.world.width - 24));
+	beer.y = Math.floor(Math.random() * 10000 % (game.world.height - 22));
 
 	addBaddie();		
 }
