@@ -8,7 +8,7 @@ var pspeed = 150;
 
 function preload() {
 	game.load.image('beer', 'assets/beer.png');
-	game.load.spritesheet('dude', 'assets/pedestrian2.png', 32, 48);
+	game.load.spritesheet('dude', 'assets/pedestrian.png', 32, 48);
 	game.load.spritesheet('bike', 'assets/bike2.png', 40, 40);
 	game.load.spritesheet('boarder', 'assets/boarder.png', 32, 40);
 	game.load.spritesheet('walker', 'assets/walker.png', 32, 48);
@@ -63,7 +63,7 @@ function update() {
 	} else {
 		baddies.forEachExists(stopBaddie, this);
 		player.animations.stop();
-		player.frame = 4;	
+		player.frame = 9;
 		if (keyboard.isDown(32)) {
 			baddies.forEachExists(killBaddie, this);
 			gameoverText.destroy(true);
@@ -84,8 +84,8 @@ function collectBeer(player, beer) {
 
 	updateScore();
 
-	beer.x = Math.floor(Math.random() * 10000 % (game.world.width - 24));
-	beer.y = Math.floor(Math.random() * 10000 % (game.world.height - 22));
+	beer.x = Math.floor(Math.random() * 10000 % (game.world.width - 22));
+	beer.y = Math.floor(Math.random() * 10000 % (game.world.height - 28));
 
 	addBaddie();		
 }
@@ -120,8 +120,8 @@ function controlPlayer() {
 function addBaddie() {
 	var type = Math.floor(Math.random() * 10000 % 3);
 
-	var x = Math.floor(Math.random() * 10000 % (game.world.width - 32));
-	var y = Math.floor(Math.random() * 10000 % (game.world.height - 32));
+	var x = Math.floor(Math.random() * 10000 % (game.world.width - 40));
+	var y = Math.floor(Math.random() * 10000 % (game.world.height - 48));
 	
 	if (((player.x-16) < x && x < (player.x+48)) || 
 		((player.y-16) < y && y < (player.y+68))) {
