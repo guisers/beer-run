@@ -18,6 +18,7 @@ function create() {
 	//Start physics engine
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 
+	//Playing state
 	playing = true;
 
 	//Background
@@ -50,7 +51,6 @@ function create() {
 }
 
 function update() {
-	//Player
 	player.body.velocity.x = 0;
 	player.body.velocity.y = 0;
 
@@ -60,13 +60,15 @@ function update() {
 		baddies.forEachExists(moveBaddie, this);
 		game.physics.arcade.overlap(player, baddies, gameOver);
 	} else {
-		baddies.forEachExists(stopBaddie, this);	
+		baddies.forEachExists(stopBaddie, this);
+		player.animations.stop();
+		player.frame = 4;	
 		if (keyboard.isDown(32)) {
 			baddies.forEachExists(killBaddie, this);
 			gameoverText.destroy(true);
 			score = 0;
-			collectStar(player, star);
 			pspeed = 150;
+			collectStar(player, star);
 			playing = true;
 		}	
 	}
@@ -74,16 +76,17 @@ function update() {
 }
 
 function collectStar(player, star) {
-		if (playing) {
-			score += 1;
-		}
+	if (playing) {
+		score += 1;
 		pspeed += 5;
-		updateScore();
+	}
 
-		star.x = Math.floor(Math.random() * 10000 % (game.world.width - 24));
-		star.y = Math.floor(Math.random() * 10000 % (game.world.height - 22));
+	updateScore();
 
-		addBaddie();		
+	star.x = Math.floor(Math.random() * 10000 % (game.world.width - 24));
+	star.y = Math.floor(Math.random() * 10000 % (game.world.height - 22));
+
+	addBaddie();		
 }
 
 function updateScore() {
@@ -168,6 +171,8 @@ function moveBaddie(baddie) {
 	var origSpeed;
 	var speed;
 	var horiz = false;
+	var xsize;
+	var ysize;
 	
 	if (baddie.body.velocity.x != 0) {
 		horiz = true;
@@ -181,17 +186,23 @@ function moveBaddie(baddie) {
 	switch (origSpeed) {
 		case 150: case -150:
 			speed = 150;
+			xsize = 32;
+			ysize = 48;
 			break;
 		case 200: case -200:
 			speed = 200;
+			xsize = 32;
+			ysize = 40;
 			break;
 		case 300: case -300:
 			speed = 300;
+			xsize = 40;
+			ysize = 40;
 			break;
 	}
 
 	if (horiz) {
-		if(baddie.x > (game.world.width - 32)) {
+		if(baddie.x > (game.world.width - xsize)) {
 			baddie.body.velocity.x = -speed;
 			baddie.animations.play('left');	
 		} else if (baddie.x < 0) {
@@ -199,7 +210,7 @@ function moveBaddie(baddie) {
 			baddie.animations.play('right');	
 		}
 	} else {
-		if(baddie.y > (game.world.height - 32)) {
+		if(baddie.y > (game.world.height - ysize)) {
 			baddie.body.velocity.y = -speed;
 			baddie.animations.play('left');
 		} else if (baddie.y < 0) {
@@ -212,7 +223,7 @@ function moveBaddie(baddie) {
 function gameOver(player, baddies) {
 	playing = false;
 	gameoverText = game.add.text(400, game.world.height - (32*3) - 16, 
-		'GAME OVER\nYour Score: ' + score + '\nPress spacebar to play again', 
+		'OUCH!\nYour Score: ' + score + '\nPress spacebar to play again', 
 		{fontSize: '32px', fill: '#000', align: 'right'});
 	if (score > highScore) {
 		highScore = score;
