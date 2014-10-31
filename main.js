@@ -2,11 +2,10 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 var score = 0;
 var highScore = 0;
 var scoreText;
-var highScoreText;
 var endScore;
 var playing;
 var gameover;
-var playagain;
+
 var pspeed = 150;
 
 function preload() {
@@ -47,7 +46,9 @@ function create() {
 	keyboard = game.input.keyboard;
 
 	//Score system
-	startScore();
+	scoreText = game.add.text(16, 16, 
+		"Beers: " + score + '\nHigh Score: ' + highScore, 
+		{fontSize: '32px', fill: '#000'});
 }
 
 function update() {
@@ -65,13 +66,7 @@ function update() {
 		if (keyboard.isDown(32)) {
 			baddies.forEachExists(killBaddie, this);
 			gameover.destroy(true);
-			playagain.destroy(true);
-			if (score > highScore) {
-				highScore = score;
-				highScoreText.text = 'High Score: ' + highScore;
-			}
 			score = 0;
-			pspeed = 150;
 			collectStar(player, star);
 			pspeed = 150;
 			playing = true;
@@ -80,23 +75,21 @@ function update() {
 	
 }
 
-
-function startScore() {
-	scoreText = game.add.text(16, 16, "Beers: " + score, {fontSize: '32px', fill: '#000'});
-	highScoreText = game.add.text(16, 48, "High Score: " + highScore, {fontSize: '28px', fill: '#000'});
-}
-
 function collectStar(player, star) {
 		if (playing) {
 			score += 1;
 		}
 		pspeed += 5;
-		scoreText.text = 'Beers: ' + score;
-		
+		updateScore();
+
 		star.x = Math.floor(Math.random() * 10000 % (game.world.width - 24));
 		star.y = Math.floor(Math.random() * 10000 % (game.world.height - 22));
 
 		addBaddie();		
+}
+
+function updateScore() {
+	scoreText.text = 'Beers: ' + score + '\nHigh Score: ' + highScore;
 }
 
 function controlPlayer() {
@@ -221,10 +214,14 @@ function moveBaddie(baddie) {
 
 function gameOver(player, baddies) {
 	playing = false;
-	gameover = game.add.text(game.world.width / 2, game.world.height / 2, 
-		'GAME OVER', {fontSize: '32px', fill: '#000'});
-	playagain = game.add.text(game.world.width / 2, game.world.height / 2 + 32, 
-		'Press spacebar to play again', {fontSize: '28px', fill: '#000'});
+	gameover = game.add.text(400, game.world.height - (32*3) - 16, 
+		'GAME OVER\nYour Score: ' + score + '\nPress spacebar to play again', 
+		{fontSize: '32px', fill: '#000', align: 'right'});
+	if (score > highScore) {
+		highScore = score;
+		updateScore();
+	}
+	
 }
 
 function stopBaddie(baddie) {
